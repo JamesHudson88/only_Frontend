@@ -16,18 +16,6 @@ import { EnhancedRegistrationModal } from './components/EnhancedRegistrationModa
 import Login from './pages/Login';
 import Register from './pages/Register';
 
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
-  
-  if (loading) return null;
-  
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-  
-  return <>{children}</>;
-};
-
 function App() {
   const [isRegistrationOpen, setIsRegistrationOpen] = useState(false);
 
@@ -40,39 +28,14 @@ function App() {
             <Route path="/" element={<Home onRegister={() => setIsRegistrationOpen(true)} />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/events" element={<Events />} />
+            <Route path="/success-stories" element={<SuccessStories />} />
+            <Route path="/jobs" element={<Jobs />} />
+            <Route path="/alumni-directory" element={<AlumniDirectory />} />
+            <Route path="/connecting-with-alumni" element={<ConnectingWithAlumni />} />
             <Route path="/membership" element={<Membership onRegister={() => setIsRegistrationOpen(true)} />} />
             <Route path="/contact" element={<Contact />} />
-            
-            <Route path="/about" element={
-              <ProtectedRoute>
-                <About />
-              </ProtectedRoute>
-            } />
-            <Route path="/events" element={
-              <ProtectedRoute>
-                <Events />
-              </ProtectedRoute>
-            } />
-            <Route path="/success-stories" element={
-              <ProtectedRoute>
-                <SuccessStories />
-              </ProtectedRoute>
-            } />
-            <Route path="/jobs" element={
-              <ProtectedRoute>
-                <Jobs />
-              </ProtectedRoute>
-            } />
-            <Route path="/alumni-directory" element={
-              <ProtectedRoute>
-                <AlumniDirectory />
-              </ProtectedRoute>
-            } />
-            <Route path="/connecting-with-alumni" element={
-              <ProtectedRoute>
-                <ConnectingWithAlumni />
-              </ProtectedRoute>
-            } />
           </Routes>
         </main>
         <Footer />
