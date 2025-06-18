@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Calendar, MapPin, Clock, Users, Filter, Search, Plus, Star, Eye, ChevronRight } from 'lucide-react';
-import { useAuth } from '../components/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import { EventRegistrationModal } from '../components/EventRegistrationModal';
 import { EventIdeaModal } from '../components/EventIdeaModal';
 import { EventDetailsModal } from '../components/EventDetailsModal';
@@ -104,7 +104,7 @@ const Events = () => {
 
   // Sample events data including past events
   const sampleEvents: Event[] = [
-    // Existing upcoming events
+    // Upcoming events
     {
       _id: '1',
       title: 'Annual Alumni Reunion 2025',
@@ -294,7 +294,7 @@ const Events = () => {
       spotsRemaining: 33,
       createdAt: '2025-01-01'
     },
-    // New past events
+    // Past events
     {
       _id: '5',
       title: 'Winter Alumni Meetup 2024',
@@ -435,147 +435,6 @@ const Events = () => {
       isRegistrationOpen: false,
       spotsRemaining: 0,
       createdAt: '2024-09-10'
-    },
-    {
-      _id: '8',
-      title: 'Summer Reunion 2024',
-      description: 'A summer reunion to celebrate alumni achievements.',
-      shortDescription: 'Summer reunion celebrating alumni success.',
-      date: '2024-08-15',
-      startTime: '11:00',
-      endTime: '18:00',
-      duration: 420,
-      location: 'Namal University Campus, Mianwali',
-      venue: {
-        name: 'Outdoor Grounds',
-        address: '30 km Talagang Road',
-        city: 'Mianwali'
-      },
-      type: 'Reunion',
-      category: 'Social',
-      capacity: 400,
-      registeredCount: 350,
-      isVirtual: false,
-      images: [{
-        url: 'https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-        caption: 'Summer Reunion',
-        isPrimary: true
-      }],
-      gallery: [],
-      organizer: {
-        name: 'Alumni Relations Office',
-        email: 'alumni@namal.edu.pk',
-        organization: 'Namal University'
-      },
-      speakers: [],
-      agenda: [],
-      requirements: [],
-      benefits: ['Networking', 'Celebration', 'Lunch'],
-      tags: ['reunion', 'summer', 'social'],
-      registrationFee: { amount: 1800, currency: 'PKR' },
-      registrationDeadline: '2024-08-10',
-      createdBy: { firstName: 'Admin', lastName: 'User', email: 'admin@namal.edu.pk' },
-      status: 'Published',
-      visibility: 'Public',
-      feedback: [],
-      averageRating: 0,
-      totalFeedback: 0,
-      isPast: true,
-      isRegistrationOpen: false,
-      spotsRemaining: 0,
-      createdAt: '2024-07-15'
-    },
-    {
-      _id: '9',
-      title: 'Networking Lunch 2024',
-      description: 'A casual lunch event for alumni networking.',
-      shortDescription: 'Casual networking lunch for alumni.',
-      date: '2024-07-20',
-      startTime: '12:00',
-      endTime: '14:00',
-      duration: 120,
-      location: 'Pearl Continental Hotel, Karachi',
-      venue: {
-        name: 'Dining Hall',
-        address: 'Club Road',
-        city: 'Karachi'
-      },
-      type: 'Networking',
-      category: 'Social',
-      capacity: 80,
-      registeredCount: 65,
-      isVirtual: false,
-      images: [{
-        url: 'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-        caption: 'Networking Lunch',
-        isPrimary: true
-      }],
-      gallery: [],
-      organizer: {
-        name: 'Karachi Alumni Chapter',
-        email: 'karachi@namal.edu.pk'
-      },
-      speakers: [],
-      agenda: [],
-      requirements: [],
-      benefits: ['Networking', 'Lunch'],
-      tags: ['networking', 'lunch', 'social'],
-      registrationFee: { amount: 2000, currency: 'PKR' },
-      registrationDeadline: '2024-07-15',
-      createdBy: { firstName: 'Karachi', lastName: 'Chapter', email: 'karachi@namal.edu.pk' },
-      status: 'Published',
-      visibility: 'Public',
-      feedback: [],
-      averageRating: 0,
-      totalFeedback: 0,
-      isPast: true,
-      isRegistrationOpen: false,
-      spotsRemaining: 0,
-      createdAt: '2024-06-20'
-    },
-    {
-      _id: '10',
-      title: 'Spring Tech Seminar 2024',
-      description: 'A seminar on emerging tech trends with alumni speakers.',
-      shortDescription: 'Spring seminar on emerging tech trends.',
-      date: '2024-06-01',
-      startTime: '09:00',
-      endTime: '11:00',
-      duration: 120,
-      location: 'Virtual Event',
-      type: 'Workshop',
-      category: 'Professional',
-      capacity: 120,
-      registeredCount: 100,
-      isVirtual: true,
-      meetingLink: 'https://zoom.us/j/456789123',
-      images: [{
-        url: 'https://images.pexels.com/photos/3183183/pexels-photo-3183183.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-        caption: 'Tech Seminar',
-        isPrimary: true
-      }],
-      gallery: [],
-      organizer: {
-        name: 'Tech Alumni Chapter',
-        email: 'tech@namal.edu.pk'
-      },
-      speakers: [],
-      agenda: [],
-      requirements: [],
-      benefits: ['Tech trends', 'Q&A'],
-      tags: ['technology', 'seminar', 'spring'],
-      registrationFee: { amount: 0, currency: 'PKR' },
-      registrationDeadline: '2024-05-30',
-      createdBy: { firstName: 'Tech', lastName: 'Chapter', email: 'tech@namal.edu.pk' },
-      status: 'Published',
-      visibility: 'Public',
-      feedback: [],
-      averageRating: 0,
-      totalFeedback: 0,
-      isPast: true,
-      isRegistrationOpen: false,
-      spotsRemaining: 0,
-      createdAt: '2024-05-01'
     }
   ];
 
@@ -607,7 +466,7 @@ const Events = () => {
     if (filter === 'upcoming') {
       filtered = filtered.filter(event => !event.isPast);
     } else if (filter === 'past') {
-      filtered = filtered.filter(event => event.isPast).slice(0, 7); // Limit to 6-7 past events
+      filtered = filtered.filter(event => event.isPast);
     }
 
     if (typeFilter !== 'all') {

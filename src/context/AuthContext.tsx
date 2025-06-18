@@ -1,11 +1,4 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-const AuthLoadingSpinner = () => (
-  <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
-    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-  </div>
-);
 
 interface User {
   _id: string;
@@ -41,67 +34,72 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+
+  // Demo credentials for hardcoded authentication
+  const demoUsers = [
+    {
+      _id: '1',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'demo@namal.edu.pk',
+      password: 'demo123',
+      graduationYear: 2020,
+      degreeProgram: 'Computer Science',
+      membershipType: 'Premium'
+    },
+    {
+      _id: '2',
+      firstName: 'Jane',
+      lastName: 'Smith',
+      email: 'admin@namal.edu.pk',
+      password: 'admin123',
+      graduationYear: 2019,
+      degreeProgram: 'Business Administration',
+      membershipType: 'Lifetime'
+    }
+  ];
 
   useEffect(() => {
-    const initializeAuth = async () => {
-      const storedToken = localStorage.getItem('token');
-      
-      if (!storedToken) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const response = await fetch('/api/auth/me', {
-          headers: {
-            'Authorization': `Bearer ${storedToken}`
-          }
-        });
-        
-        if (!response.ok) {
-          throw new Error('Session expired');
-        }
-
-        const data = await response.json();
-        setUser(data.user);
-        setToken(storedToken);
-      } catch (error) {
-        console.error('Auth initialization error:', error);
-        localStorage.removeItem('token');
-        setError(error instanceof Error ? error.message : 'Failed to initialize auth');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    initializeAuth();
+    const storedToken = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
+    
+    if (storedToken && storedUser) {
+      setToken(storedToken);
+      setUser(JSON.parse(storedUser));
+    }
   }, []);
 
   const login = async (email: string, password: string) => {
     setLoading(true);
+    setError(null);
+    
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Check demo credentials
+      const foundUser = demoUsers.find(u => u.email === email && u.password === password);
+      
+      if (!foundUser) {
+        throw new Error('Invalid email or password');
       }
 
-      localStorage.setItem('token', data.token);
-      setToken(data.token);
-      setUser(data.user);
+      // Create user object without password
+      const { password: _, ...userWithoutPassword } = foundUser;
+      const mockToken = 'demo-token-' + Date.now();
+      
+      localStorage.setItem('token', mockToken);
+      localStorage.setItem('user', JSON.stringify(userWithoutPassword));
+      
+      setToken(mockToken);
+      setUser(userWithoutPassword);
       setError(null);
-      navigate('/');
+      
+      // Show success message
+      alert('Login successful! Welcome back to Namal Alumni Network.');
+      
     } catch (error) {
       console.error('Login error:', error);
       setError(error instanceof Error ? error.message : 'Login failed');
@@ -120,26 +118,41 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     degreeProgram?: string;
   }) => {
     setLoading(true);
+    setError(null);
+    
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Registration failed');
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Check if email already exists
+      const existingUser = demoUsers.find(u => u.email === userData.email);
+      if (existingUser) {
+        throw new Error('Email already registered. Please use a different email.');
       }
 
-      localStorage.setItem('token', data.token);
-      setToken(data.token);
-      setUser(data.user);
+      // Create new user
+      const newUser = {
+        _id: (demoUsers.length + 1).toString(),
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        email: userData.email,
+        graduationYear: userData.graduationYear,
+        degreeProgram: userData.degreeProgram,
+        membershipType: 'Basic'
+      };
+      
+      const mockToken = 'demo-token-' + Date.now();
+      
+      localStorage.setItem('token', mockToken);
+      localStorage.setItem('user', JSON.stringify(newUser));
+      
+      setToken(mockToken);
+      setUser(newUser);
       setError(null);
-      navigate('/');
+      
+      // Show success message
+      alert('Registration successful! Welcome to Namal Alumni Network. You can now access all features.');
+      
     } catch (error) {
       console.error('Registration error:', error);
       setError(error instanceof Error ? error.message : 'Registration failed');
@@ -151,13 +164,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setToken(null);
     setUser(null);
     setError(null);
-    navigate('/login');
+    alert('You have been logged out successfully.');
   };
 
-  const isAuthenticated = !!token;
+  const isAuthenticated = !!token && !!user;
 
   return (
     <AuthContext.Provider value={{ 
@@ -170,7 +184,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       loading,
       error
     }}>
-      {loading ? <AuthLoadingSpinner /> : children}
+      {children}
     </AuthContext.Provider>
   );
 };

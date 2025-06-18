@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Briefcase, Building2, MapPin, Clock, Search, Filter, MessageSquare, Send, Plus, Eye, Calendar, DollarSign, Upload, X } from 'lucide-react';
-import { useAuth } from '../components/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import { JobPostModal } from '../components/JobPostModal';
 
 interface Job {
@@ -87,7 +87,7 @@ const Jobs = () => {
         max: 250000,
         currency: 'PKR'
       },
-      applicationDeadline: '2025-08-15', // Extended to August
+      applicationDeadline: '2025-08-15',
       applicationMethod: 'email',
       applicationEmail: 'careers@techcorp.com',
       postedBy: {
@@ -127,7 +127,7 @@ const Jobs = () => {
         max: 120000,
         currency: 'PKR'
       },
-      applicationDeadline: '2025-09-30', // Extended to September
+      applicationDeadline: '2025-09-30',
       applicationMethod: 'email',
       applicationEmail: 'hr@digitalmarketingpro.com',
       postedBy: {
@@ -167,7 +167,7 @@ const Jobs = () => {
         max: 90000,
         currency: 'PKR'
       },
-      applicationDeadline: '2025-10-15', // Extended to October
+      applicationDeadline: '2025-10-15',
       applicationMethod: 'email',
       applicationEmail: 'careers@investcorp.com',
       postedBy: {
@@ -207,7 +207,7 @@ const Jobs = () => {
         max: 300000,
         currency: 'PKR'
       },
-      applicationDeadline: '2025-08-31', // Extended to August
+      applicationDeadline: '2025-08-31',
       applicationMethod: 'website',
       applicationUrl: 'https://innovationlabs.com/careers',
       postedBy: {
@@ -219,7 +219,6 @@ const Jobs = () => {
       applicationCount: 42,
       createdAt: '2025-01-05'
     },
-    // Add these new jobs with future deadlines
     {
       _id: '5',
       title: 'Data Scientist',
@@ -422,9 +421,7 @@ const Jobs = () => {
     }
   ];
 
-
   useEffect(() => {
-    // Use sample data instead of API call
     setJobs(sampleJobs);
     setLoading(false);
   }, []);
@@ -436,12 +433,10 @@ const Jobs = () => {
   const filterJobs = () => {
     let filtered = jobs;
 
-    // Filter by category
     if (filter !== 'all') {
       filtered = filtered.filter(job => job.category.toLowerCase() === filter.toLowerCase());
     }
 
-    // Filter by search term
     if (searchTerm) {
       filtered = filtered.filter(job =>
         job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -474,14 +469,12 @@ const Jobs = () => {
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Check file type
       const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
       if (!allowedTypes.includes(file.type)) {
         alert('Please upload a PDF or Word document');
         return;
       }
       
-      // Check file size (5MB limit)
       if (file.size > 5 * 1024 * 1024) {
         alert('File size should be less than 5MB');
         return;
@@ -497,7 +490,6 @@ const Jobs = () => {
       return;
     }
     
-    // In a real implementation, this would upload the file and submit the application
     alert('Application submitted successfully! The recruiter will contact you soon.');
     setShowApplicationModal(false);
     setApplicationData({ name: '', qualification: '', cv: null });
@@ -506,7 +498,6 @@ const Jobs = () => {
   const sendContactMessage = () => {
     if (!contactMessage.trim()) return;
 
-    // In a real implementation, this would send an email or message
     alert('Message sent to recruiter!');
     setShowContactModal(false);
     setContactMessage('');
@@ -1052,7 +1043,6 @@ const Jobs = () => {
         </div>
       )}
 
-      {/* Job Post Modal */}
       <JobPostModal 
         isOpen={showJobPostModal}
         onClose={() => setShowJobPostModal(false)}
